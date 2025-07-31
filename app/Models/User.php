@@ -58,4 +58,20 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    /**
+     * Get the user's movie ratings
+     */
+    public function ratings()
+    {
+        return $this->hasMany(UserRating::class);
+    }
+
+    /**
+     * Get a specific rating for a movie
+     */
+    public function ratingFor(string $imdbId)
+    {
+        return $this->ratings()->where('imdb_id', $imdbId)->first();
+    }
 }
