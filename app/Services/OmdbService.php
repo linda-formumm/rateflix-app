@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class OmdbService
 {
     private string $apiKey;
     private string $baseUrl = 'https://www.omdbapi.com/';
+    private int $cacheMinutes = 60; // Cache für 1 Stunde
 
     public function __construct()
     {
@@ -19,20 +21,24 @@ class OmdbService
      */
     public function searchMovies(string $query): ?array
     {
-        $response = Http::get($this->baseUrl, [
-            'apikey' => $this->apiKey,
-            's' => $query,
-        ]);
+        $cacheKey = 'omdb_search_' . md5(strtolower(trim($query)));
+        
+        return Cache::remember($cacheKey, $this->cacheMinutes * 60, function () use ($query) {
+            $response = Http::get($this->baseUrl, [
+                'apikey' => $this->apiKey,
+                's' => $query,
+            ]);
 
-        if ($response->ok()) {
-            $data = $response->json();
-            
-            if (isset($data['Response']) && $data['Response'] === 'True' && isset($data['Search'])) {
-                return $data['Search'];
+            if ($response->ok()) {
+                $data = $response->json();
+                
+                if (isset($data['Response']) && $data['Response'] === 'True' && isset($data['Search'])) {
+                    return $data['Search'];
+                }
             }
-        }
 
-        return null;
+            return null;
+        });
     }
 
     /**
@@ -40,20 +46,24 @@ class OmdbService
      */
     public function getMovieDetails(string $imdbId): ?array
     {
-        $response = Http::get($this->baseUrl, [
-            'apikey' => $this->apiKey,
-            'i' => $imdbId,
-        ]);
+        $cacheKey = 'omdb_details_' . $imdbId;
+        
+        return Cache::remember($cacheKey, $this->cacheMinutes * 60, function () use ($imdbId) {
+            $response = Http::get($this->baseUrl, [
+                'apikey' => $this->apiKey,
+                'i' => $imdbId,
+            ]);
 
-        if ($response->ok()) {
-            $details = $response->json();
-            
-            if (isset($details['Response']) && $details['Response'] === 'True') {
-                return $details;
+            if ($response->ok()) {
+                $details = $response->json();
+                
+                if (isset($details['Response']) && $details['Response'] === 'True') {
+                    return $details;
+                }
             }
-        }
 
-        return null;
+            return null;
+        });
     }
 
     /**
