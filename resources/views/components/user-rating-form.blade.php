@@ -38,7 +38,7 @@
                         wire:click="deleteUserRating('{{ $movie['imdbID'] }}')"
                         wire:confirm="Are you sure you want to delete your rating?"
                         class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer">
-                    Delete Rating
+                    Delete my Rating
                 </button>
             </div>
         </div>

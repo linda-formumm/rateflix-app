@@ -15,7 +15,7 @@ Route::view('movies', 'movies')
     ->middleware(['auth', 'verified'])
     ->name('movies');
 
-Route::view('ratings', 'user-ratings')
+Route::view('ratings', 'ratings')
     ->middleware(['auth', 'verified'])
     ->name('ratings');
 

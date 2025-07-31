@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <!-- Rate This Movie Skeleton - Kompakter -->
+    <!-- Rate This Movie Skeleton -->
     <div class="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
         <div class="h-4 bg-gray-200 dark:bg-zinc-700 rounded w-24 mb-3"></div>
         
