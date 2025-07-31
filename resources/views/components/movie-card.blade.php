@@ -4,7 +4,7 @@
             bg-white dark:bg-zinc-900 
             text-gray-900 dark:text-gray-100 
             shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer
-            focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 
+            focus:outline-none focus:ring-2 focus:ring-slate-500 dark:focus:ring-slate-400 focus:ring-offset-2 
             hover:border-gray-400 dark:hover:border-gray-500"
             tabindex="0"
             role="button"
@@ -28,7 +28,9 @@
         {{ $movie['Year'] ?? 'N/A' }} • {{ ucfirst($movie['Type']) }}
     </div>
     
-    <div class="text-center py-2">
-        <span class="text-xs text-gray-400 dark:text-gray-500" aria-hidden="true">Click for details...</span>
+    <div class="flex flex-col gap-2">
+        <button class="btn btn-primary btn-sm w-full" onclick="event.stopPropagation(); this.closest('[role=button]').click();">
+            Rate Movie
+        </button>
     </div>
 </div>

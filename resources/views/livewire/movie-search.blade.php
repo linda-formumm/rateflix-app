@@ -1,10 +1,13 @@
 <?php
 
 use Livewire\Volt\Component;
+use Livewire\Attributes\Url;
 use App\Services\OmdbService;
 
 new class extends Component {
-    public string $query = '';
+    #[Url(as: 'q', except: '')]
+    public string $query = 'Matrix';
+    
     public ?array $movies = null;
     public array $movieDetails = [];
     public bool $isLoading = false;
@@ -12,18 +15,31 @@ new class extends Component {
     public ?array $selectedMovieDetails = null;
     public bool $showModal = false;
 
-    public function updatedQuery()
+    public function mount()
     {
+        // Führe Suche aus, falls Query bereits gesetzt ist (z.B. aus URL)
         if (strlen($this->query) >= 3) {
-            $this->isLoading = true;
-            $omdbService = app(OmdbService::class);
-            
-            $this->movies = $omdbService->searchMovies($this->query);
-            $this->isLoading = false;
+            $this->search();
+        }
+    }
+
+    public function updatedQuery()
+    {                
+        if (strlen($this->query) >= 3) {
+            $this->search();
         } else {
             $this->movies = null;
             $this->isLoading = false;
         }
+    }
+
+    private function search()
+    {
+        $this->isLoading = true;
+        $omdbService = app(OmdbService::class);
+        
+        $this->movies = $omdbService->searchMovies($this->query);
+        $this->isLoading = false;
     }
 
     public function showMovieDetails($imdbId)
@@ -54,7 +70,7 @@ new class extends Component {
 }; ?>
 
 <div class="relative z-10 p-4">
-    <x-search-input wire:model.live.debounce.750ms="query" placeholder="Enter movie title" />
+    <x-search-input wire:model.live.debounce.750ms="query" placeholder="Enter movie title" value="{{ $query }}" />
 
     @if($isLoading)
         <x-movie-skeleton :count="10" />

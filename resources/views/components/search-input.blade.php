@@ -1,5 +1,6 @@
 @props(['placeholder' => 'Search...'])
 
+{{ $value ?? '' }}
 <div>
     <label for="movie-search" class="sr-only">Search for movies</label>
     <input type="text" 

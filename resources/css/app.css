@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import '../../vendor/livewire/flux/dist/flux.css';
+@import "tailwindcss";
+@import "../../vendor/livewire/flux/dist/flux.css";
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -9,7 +9,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
 
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
@@ -37,7 +39,6 @@
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -52,13 +53,206 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* Global Button Styles */
+@utility btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    border-width: 1px;
+    transition-property: color, background-color, border-color;
+    transition-duration: 200ms;
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+        ring: 2px;
+        ring-offset: 2px;
+    }
+}
+
+@utility btn-primary {
+    background-color: theme(colors.slate.600);
+    color: theme(colors.white);
+    border-color: theme(colors.slate.600);
+
+    &:hover {
+        background-color: theme(colors.slate.700);
+    }
+
+    &:focus {
+        ring-color: theme(colors.slate.500);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: theme(colors.slate.700);
+        border-color: theme(colors.slate.700);
+        ring-offset-color: theme(colors.zinc.900);
+
+        &:hover {
+            background-color: theme(colors.slate.600);
+        }
+
+        &:focus {
+            ring-color: theme(colors.slate.400);
+        }
+    }
+}
+
+@utility btn-secondary {
+    background-color: theme(colors.gray.600);
+    color: theme(colors.white);
+    border-color: theme(colors.gray.600);
+
+    &:hover {
+        background-color: theme(colors.gray.700);
+    }
+
+    &:focus {
+        ring-color: theme(colors.gray.500);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: theme(colors.gray.700);
+        border-color: theme(colors.gray.700);
+        ring-offset-color: theme(colors.zinc.900);
+
+        &:hover {
+            background-color: theme(colors.gray.600);
+        }
+
+        &:focus {
+            ring-color: theme(colors.gray.400);
+        }
+    }
+}
+
+@utility btn-outline {
+    background-color: transparent;
+    color: theme(colors.gray.700);
+    border-color: theme(colors.gray.300);
+
+    &:hover {
+        background-color: theme(colors.gray.50);
+    }
+
+    &:focus {
+        ring-color: theme(colors.gray.500);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        color: theme(colors.gray.300);
+        border-color: theme(colors.gray.600);
+        ring-offset-color: theme(colors.zinc.900);
+
+        &:hover {
+            background-color: theme(colors.zinc.800);
+        }
+
+        &:focus {
+            ring-color: theme(colors.gray.400);
+        }
+    }
+}
+
+@utility btn-danger {
+    background-color: theme(colors.red.600);
+    color: theme(colors.white);
+    border-color: theme(colors.red.600);
+
+    &:hover {
+        background-color: theme(colors.red.700);
+    }
+
+    &:focus {
+        ring-color: theme(colors.red.500);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: theme(colors.red.700);
+        border-color: theme(colors.red.700);
+        ring-offset-color: theme(colors.zinc.900);
+
+        &:hover {
+            background-color: theme(colors.red.600);
+        }
+
+        &:focus {
+            ring-color: theme(colors.red.400);
+        }
+    }
+}
+
+@utility btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+@utility btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+@utility btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Global Heading Styles */
+h1.heading-1,
+.heading-1 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 2.75rem;
+    color: theme(colors.zinc.700);
+    margin-bottom: 0.5rem;
+    height: 2.75rem;
+}
+
+.dark h1.heading-1,
+.dark .heading-1 {
+    color: theme(colors.zinc.300);
+}
+
+h2.heading-2,
+.heading-2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 2rem;
+    color: theme(colors.zinc.900);
+    margin-bottom: 0.75rem;
+}
+
+.dark h2.heading-2,
+.dark .heading-2 {
+    color: theme(colors.zinc.100);
+}
+
+h3.heading-3,
+.heading-3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+    color: theme(colors.zinc.900);
+    margin-bottom: 0.5rem;
+}
+
+.dark h3.heading-3,
+.dark .heading-3 {
+    color: theme(colors.zinc.100);
 }
 
 /* \[:where(&)\]:size-4 {

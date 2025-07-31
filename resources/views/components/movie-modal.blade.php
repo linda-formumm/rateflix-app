@@ -3,7 +3,7 @@
 @if($show && $movie && $movieDetails)
 <div 
     style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99999999; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.4);"
-    class="dark:!bg-black/80"
+    class="dark:!bg-zinc-900/75 backdrop-blur-sm"
     role="dialog" 
     aria-modal="true" 
     aria-labelledby="modal-title">
@@ -14,14 +14,14 @@
          aria-hidden="true"></div>
     
     <!-- Modal Content -->
-    <div style="position: relative; border-radius: 0.5rem; max-width: 56rem; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);" 
-         class="bg-white dark:bg-zinc-900">
+    <div style="position: relative; border-radius: 0.75rem; max-width: 56rem; width: 100%; max-height: 90vh; overflow-y: auto;" 
+         class="bg-white dark:bg-zinc-800 shadow-2xl dark:shadow-black/50 ring-1 ring-black/5 dark:ring-white/10">
         
         <!-- Close X -->
         <button 
             {{ $attributes->whereStartsWith('wire:') }} 
             style="position: absolute; top: 1rem; right: 1rem; z-index: 10; background: none; border: none; padding: 0.5rem; border-radius: 9999px; cursor: pointer;"
-            class="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-zinc-900"
+            class="text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-500 dark:focus:ring-slate-400 focus:ring-offset-2 dark:focus:ring-offset-zinc-800"
             aria-label="Close modal"
             id="modal-close-button">
             <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -64,8 +64,7 @@
             <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
                 <button 
                     {{ $attributes->whereStartsWith('wire:') }} 
-                    style="padding: 0.5rem 1rem; border: none; border-radius: 0.25rem; cursor: pointer; font-weight: 500;"
-                    class="bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 transition-colors duration-200"
+                    class="btn btn-secondary"
                     aria-label="Close modal">
                     Close
                 </button>
