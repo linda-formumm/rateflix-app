@@ -1,6 +1,6 @@
 @props(['count' => 10])
 
-<div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3" role="list" aria-label="Loading movie results">
+<div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" role="list" aria-label="Loading movie results">
     @for($i = 0; $i < $count; $i++)
         <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-md overflow-hidden animate-pulse cursor-pointer transform transition-transform duration-200">
             <!-- Skeleton Poster -->

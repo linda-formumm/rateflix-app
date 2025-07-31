@@ -12,3 +12,32 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
+
+<style>
+/* Grid Main Area höherer z-index für Desktop - über Sidebar */
+@media (min-width: 1024px) {
+    /* Alle möglichen main-Selektoren */
+    main,
+    [role="main"],
+    .main-content,
+    .grid-area-main,
+    [style*="grid-area: main"],
+    [style*="grid-area:main"],
+    [class*="grid-area"],
+    [class*="main"] {
+        z-index: 21 !important;
+        position: relative;
+    }
+    
+    /* Spezifische Tailwind-Klassen */
+    .\[grid-area\:main\] {
+        z-index: 21 !important;
+        position: relative;
+    }
+}
+
+/* Überschreibe Flux Sidebar z-index für Modal-Kompatibilität */
+[data-flux-sidebar] {
+    z-index: 10 !important;
+}
+</style>
