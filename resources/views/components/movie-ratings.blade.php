@@ -1,11 +1,21 @@
 @props(['movie', 'details'])
 
 @php
-// Mock data - wird später durch echte Daten ersetzt
-$userRating = null; // Current user's rating for this movie
-$communityRatings = []; // All community ratings
-$averageRating = 0;
-$totalRatings = 0;
+// Lade echte Rating-Daten aus der Datenbank
+$userRating = auth()->check() 
+    ? \App\Models\UserRating::where('user_id', auth()->id())
+                            ->where('imdb_id', $movie['imdbID'])
+                            ->first()
+    : null;
+
+$communityRatings = \App\Models\UserRating::where('imdb_id', $movie['imdbID'])
+                                         ->with('user')
+                                         ->latest()
+                                         ->take(10)
+                                         ->get();
+
+$totalRatings = $communityRatings->count();
+$averageRating = $totalRatings > 0 ? $communityRatings->avg('rating') : 0;
 @endphp
 
 <div class="space-y-6">

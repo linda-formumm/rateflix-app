@@ -1,5 +1,18 @@
 @props(['movie'])
 
+@php
+// Lade Rating-Daten für diese Movie Card
+$userRating = auth()->check() 
+    ? \App\Models\UserRating::where('user_id', auth()->id())
+                            ->where('imdb_id', $movie['imdbID'])
+                            ->first()
+    : null;
+
+$communityRating = \App\Models\UserRating::where('imdb_id', $movie['imdbID'])
+                                        ->avg('rating');
+$ratingCount = \App\Models\UserRating::where('imdb_id', $movie['imdbID'])->count();
+@endphp
+
 <div class="group relative bg-white dark:bg-zinc-900 rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600">
     
     <!-- Poster Container with Overlay -->
@@ -51,6 +64,23 @@
                 {{ ucfirst($movie['Type']) }}
             </span>
         </div>
+        
+        <!-- Rating Display -->
+        @if($userRating)
+            <!-- Show user's own rating -->
+            <div class="flex items-center gap-2 mb-3">
+                <x-star-rating :rating="$userRating->rating" size="sm" />
+                <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">Your Rating</span>
+            </div>
+        @elseif($communityRating && $ratingCount > 0)
+            <!-- Show community rating if no user rating -->
+            <div class="flex items-center gap-2 mb-3">
+                <x-star-rating :rating="round($communityRating)" size="sm" />
+                <span class="text-xs text-gray-600 dark:text-gray-400">
+                    {{ number_format($communityRating, 1) }} ({{ $ratingCount }})
+                </span>
+            </div>
+        @endif
         
         <!-- Mobile/Touch Buttons (visible on touch devices or small screens) -->
         <div class="lg:hidden flex gap-2">

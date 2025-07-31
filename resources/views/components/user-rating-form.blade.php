@@ -1,67 +1,105 @@
 @props(['movie', 'userRating' => null])
 
 <div class="bg-white dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-        Rate This Movie
-    </h3>
-    
-    <form class="space-y-4">
-        <!-- Rating Stars -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Your Rating
-            </label>
-            <div class="flex items-center gap-1">
-                @for($i = 1; $i <= 5; $i++)
-                    <button type="button" 
-                            class="text-2xl text-gray-300 hover:text-yellow-400 transition-colors cursor-pointer"
-                            onclick="setRating({{ $i }})">
-                        ★
-                    </button>
-                @endfor
-                <span id="rating-text" class="ml-2 text-sm text-gray-600 dark:text-gray-400"></span>
+    @if($userRating)
+        <!-- User has already rated - show existing rating -->
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Your Rating
+        </h3>
+        
+        <div class="space-y-4">
+            <!-- Show current rating -->
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <x-star-rating :rating="$userRating->rating" size="lg" />
+                    <span class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                        {{ $userRating->rating }}/5
+                    </span>
+                </div>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Rated {{ $userRating->created_at->diffForHumans() }}
+                </p>
+            </div>
+            
+            @if($userRating->review)
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Your Review
+                    </label>
+                    <div class="p-3 bg-gray-50 dark:bg-zinc-700 rounded-lg">
+                        <p class="text-gray-700 dark:text-gray-300">{{ $userRating->review }}</p>
+                    </div>
+                </div>
+            @endif
+            
+            <!-- Delete Button -->
+            <div class="pt-2">
+                <button type="button"
+                        wire:click="deleteUserRating('{{ $movie['imdbID'] }}')"
+                        wire:confirm="Are you sure you want to delete your rating?"
+                        class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer">
+                    Delete Rating
+                </button>
             </div>
         </div>
+    @else
+        <!-- User hasn't rated yet - show rating form -->
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Rate This Movie
+        </h3>
         
-        <!-- Review -->
-        <div>
-            <label for="review" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Your Review (Optional)
-            </label>
-            <textarea 
-                id="review"
-                rows="4" 
-                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-700 dark:text-gray-100"
-                placeholder="Share your thoughts about this movie..."></textarea>
-        </div>
+        @if(session('success'))
+            <div class="mb-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
         
-        <!-- Submit Button -->
-        <button type="button" 
-                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors cursor-pointer">
-            Save Rating
-        </button>
-    </form>
+        @if(session('error'))
+            <div class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+        
+        <form wire:submit="saveUserRating" class="space-y-4">
+            <!-- Rating Stars -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Your Rating
+                </label>
+                <div class="flex items-center gap-1">
+                    @for($i = 1; $i <= 5; $i++)
+                        <button type="button" 
+                                wire:click="$set('ratingData.rating', {{ $i }})"
+                                class="text-2xl transition-colors cursor-pointer {{ $i <= ($this->ratingData['rating'] ?? 0) ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400' }}">
+                            ★
+                        </button>
+                    @endfor
+                    @if(($this->ratingData['rating'] ?? 0) > 0)
+                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            {{ $this->ratingData['rating'] ?? 0 }}/5
+                        </span>
+                    @endif
+                </div>
+            </div>
+            
+            <!-- Review -->
+            <div>
+                <label for="review" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Your Review (Optional)
+                </label>
+                <textarea 
+                    wire:model="ratingData.review"
+                    rows="4" 
+                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-700 dark:text-gray-100"
+                    placeholder="Share your thoughts about this movie..."></textarea>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" 
+                    class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors cursor-pointer"
+                    @disabled(!($this->ratingData['rating'] ?? 0) > 0)>
+                Save Rating
+            </button>
+        </form>
+    @endif
 </div>
-
-<script>
-let currentRating = 0;
-
-function setRating(rating) {
-    currentRating = rating;
-    
-    // Update stars visually
-    const stars = document.querySelectorAll('button[onclick*="setRating"]');
-    stars.forEach((star, index) => {
-        if (index < rating) {
-            star.classList.remove('text-gray-300');
-            star.classList.add('text-yellow-400');
-        } else {
-            star.classList.remove('text-yellow-400');
-            star.classList.add('text-gray-300');
-        }
-    });
-    
-    // Update rating text
-    document.getElementById('rating-text').textContent = rating + '/5';
-}
-</script>

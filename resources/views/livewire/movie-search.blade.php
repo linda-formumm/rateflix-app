@@ -4,6 +4,7 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\On;
 use App\Services\OmdbService;
+use App\Models\UserRating;
 
 new class extends Component {
     #[Url(as: 'q', except: '')]
@@ -15,7 +16,11 @@ new class extends Component {
     public ?array $selectedMovie = null;
     public ?array $selectedMovieDetails = null;
     public bool $showModal = false;
-    public string $activeTab = 'details'; // Aktiver Tab im Modal
+    public string $activeTab = 'details';
+    public array $ratingData = [
+        'rating' => 0,
+        'review' => ''
+    ]; // Aktiver Tab im Modal
 
     public function mount()
     {
@@ -78,6 +83,55 @@ new class extends Component {
         if ($this->selectedMovie && !$this->selectedMovieDetails) {
             $this->loadMovieDetailsAsync($this->selectedMovie['imdbID']);
         }
+    }
+
+    public function saveUserRating()
+    {
+        if (!auth()->check()) {
+            session()->flash('error', 'Please login to rate movies.');
+            return;
+        }
+
+        if ($this->ratingData['rating'] <= 0) {
+            session()->flash('error', 'Please select a rating.');
+            return;
+        }
+
+        if (!$this->selectedMovie) {
+            session()->flash('error', 'No movie selected.');
+            return;
+        }
+
+        UserRating::updateOrCreate(
+            [
+                'user_id' => auth()->id(),
+                'imdb_id' => $this->selectedMovie['imdbID']
+            ],
+            [
+                'movie_title' => $this->selectedMovie['Title'],
+                'rating' => $this->ratingData['rating'],
+                'review' => $this->ratingData['review'] ?: null
+            ]
+        );
+
+        session()->flash('success', 'Rating saved successfully!');
+        
+        // Reset rating aber behalte movie info
+        $this->ratingData['rating'] = 0;
+        $this->ratingData['review'] = '';
+    }
+
+    public function deleteUserRating($imdbId)
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        UserRating::where('user_id', auth()->id())
+                  ->where('imdb_id', $imdbId)
+                  ->delete();
+
+        session()->flash('success', 'Rating deleted successfully!');
     }
 
     public function closeModal()
