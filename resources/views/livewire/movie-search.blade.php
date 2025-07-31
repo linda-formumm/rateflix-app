@@ -15,6 +15,7 @@ new class extends Component {
     public ?array $selectedMovie = null;
     public ?array $selectedMovieDetails = null;
     public bool $showModal = false;
+    public string $activeTab = 'details'; // Aktiver Tab im Modal
 
     public function mount()
     {
@@ -43,9 +44,10 @@ new class extends Component {
         $this->isLoading = false;
     }
 
-    public function showMovieDetails($imdbId)
+    public function showMovieDetails($imdbId, $tab = 'details')
     {
         $this->selectedMovie = collect($this->movies)->firstWhere('imdbID', $imdbId);
+        $this->activeTab = $tab; // Tab setzen basierend auf Parameter
         
         // Modal sofort anzeigen
         $this->showModal = true;
@@ -83,6 +85,7 @@ new class extends Component {
         $this->showModal = false;
         $this->selectedMovie = null;
         $this->selectedMovieDetails = null;
+        $this->activeTab = 'details'; // Tab zurücksetzen
         
         // JavaScript zum Entsperren des Body
         $this->dispatch('unlock-body');
@@ -104,6 +107,7 @@ new class extends Component {
         :show="$showModal" 
         :movie="$selectedMovie" 
         :movie-details="$selectedMovieDetails"
+        :active-tab="$activeTab"
         wire:click="closeModal" />
 </div>
 

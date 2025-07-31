@@ -1,4 +1,4 @@
-@props(['show' => false, 'movie' => null, 'movieDetails' => null])
+@props(['show' => false, 'movie' => null, 'movieDetails' => null, 'activeTab' => 'details'])
 
 @if($show && $movie)
 <div 
@@ -48,19 +48,52 @@
                     @endif
                 </div>
 
-                <!-- Details -->
+                <!-- Content -->
                 <div style="flex: 1; min-width: 300px; min-height: 400px;">
                     <h2 id="modal-title" 
-                        style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;" 
+                        style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;" 
                         class="text-gray-900 dark:text-gray-100">
                         {{ $movie['Title'] }}
                     </h2>
                     
-                    @if($movieDetails)
-                        <x-movie-details :movie="$movie" :details="$movieDetails" />
-                    @else
-                        <!-- Loading Skeleton -->
-                        <x-movie-details-skeleton />
+                    <!-- Tab Navigation -->
+                    <div class="border-b border-gray-200 dark:border-gray-600 mb-4">
+                        <nav class="-mb-px flex space-x-8">
+                            <!-- Details Tab -->
+                            <button
+                                wire:click="$set('activeTab', 'details')"
+                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors
+                                    {{ $activeTab === 'details' 
+                                        ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300' }}">
+                                Movie Details
+                            </button>
+                            
+                            <!-- Community Ratings Tab -->
+                            <button
+                                wire:click="$set('activeTab', 'ratings')"
+                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors
+                                    {{ $activeTab === 'ratings' 
+                                        ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300' }}">
+                                Community Ratings
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Tab Content -->
+                    @if($activeTab === 'details')
+                        @if($movieDetails)
+                            <x-movie-details :movie="$movie" :details="$movieDetails" />
+                        @else
+                            <x-movie-details-skeleton />
+                        @endif
+                    @elseif($activeTab === 'ratings')
+                        @if($movieDetails)
+                            <x-movie-ratings :movie="$movie" :details="$movieDetails" />
+                        @else
+                            <x-movie-ratings-skeleton />
+                        @endif
                     @endif
                 </div>
             </div>

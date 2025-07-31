@@ -6,6 +6,7 @@
 
     <!-- Rating -->
     <div class="mb-4">
+        <div class="h-3 bg-gray-200 dark:bg-zinc-700 rounded w-20 mb-1"></div>
         <div class="flex items-center">
             <div class="h-4 w-4 bg-yellow-200 dark:bg-yellow-700 rounded mr-1"></div>
             <div class="h-4 bg-gray-200 dark:bg-zinc-700 rounded w-12 mr-2"></div>

@@ -18,14 +18,19 @@
     @endif
 </div>
 
-<!-- Rating -->
+<!-- IMDB Rating -->
 @if(isset($details['imdbRating']) && $details['imdbRating'] !== 'N/A')
     <div class="mb-4">
-        <span class="text-yellow-500 text-lg">⭐</span>
-        <span class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $details['imdbRating'] }}/10</span>
-        @if(isset($details['imdbVotes']) && $details['imdbVotes'] !== 'N/A')
-            <span class="text-sm text-gray-500 ml-2">({{ $details['imdbVotes'] }} votes)</span>
-        @endif
+        <div class="flex items-center gap-2 mb-1">
+            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">IMDB Rating:</span>
+        </div>
+        <div class="flex items-center">
+            <span class="text-yellow-500 text-lg">⭐</span>
+            <span class="text-lg font-semibold text-gray-900 dark:text-gray-100 ml-1">{{ $details['imdbRating'] }}/10</span>
+            @if(isset($details['imdbVotes']) && $details['imdbVotes'] !== 'N/A')
+                <span class="text-sm text-gray-500 dark:text-gray-400 ml-2">({{ $details['imdbVotes'] }} votes)</span>
+            @endif
+        </div>
     </div>
 @endif
 

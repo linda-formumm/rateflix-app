@@ -4,10 +4,6 @@
     @foreach($movies as $movie)
         <x-movie-card 
             :movie="$movie"
-            wire:click="showMovieDetails('{{ $movie['imdbID'] }}')"
-            wire:keydown.enter="showMovieDetails('{{ $movie['imdbID'] }}')"
-            wire:keydown.space="showMovieDetails('{{ $movie['imdbID'] }}')"
-            title="View Details"
             role="listitem" />
     @endforeach
 </div>
