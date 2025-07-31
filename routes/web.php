@@ -11,6 +11,14 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::view('movies', 'movies')
+    ->middleware(['auth', 'verified'])
+    ->name('movies');
+
+Route::view('ratings', 'user-ratings')
+    ->middleware(['auth', 'verified'])
+    ->name('ratings');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
