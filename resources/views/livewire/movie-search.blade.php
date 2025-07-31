@@ -2,6 +2,7 @@
 
 use Livewire\Volt\Component;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\On;
 use App\Services\OmdbService;
 
 new class extends Component {
@@ -46,16 +47,35 @@ new class extends Component {
     {
         $this->selectedMovie = collect($this->movies)->firstWhere('imdbID', $imdbId);
         
-        if (!isset($this->movieDetails[$imdbId])) {
-            $omdbService = app(OmdbService::class);
-            $details = $omdbService->getMovieDetails($imdbId);
-            if ($details) {
-                $this->movieDetails[$imdbId] = $details;
-            }
-        }
-        
-        $this->selectedMovieDetails = $this->movieDetails[$imdbId] ?? null;
+        // Modal sofort anzeigen
         $this->showModal = true;
+        
+        // Details laden - sofort wenn gecacht, sonst async
+        if (isset($this->movieDetails[$imdbId])) {
+            $this->selectedMovieDetails = $this->movieDetails[$imdbId];
+        } else {
+            $this->selectedMovieDetails = null;
+            // Dispatch für sofortiges Rerendering und dann Details laden
+            $this->dispatch('modal-opened');
+        }
+    }
+
+    public function loadMovieDetailsAsync($imdbId)
+    {
+        $omdbService = app(OmdbService::class);
+        $details = $omdbService->getMovieDetails($imdbId);
+        if ($details) {
+            $this->movieDetails[$imdbId] = $details;
+            $this->selectedMovieDetails = $details;
+        }
+    }
+    
+    #[On('modal-opened')]
+    public function handleModalOpened()
+    {
+        if ($this->selectedMovie && !$this->selectedMovieDetails) {
+            $this->loadMovieDetailsAsync($this->selectedMovie['imdbID']);
+        }
     }
 
     public function closeModal()

@@ -1,6 +1,6 @@
 @props(['show' => false, 'movie' => null, 'movieDetails' => null])
 
-@if($show && $movie && $movieDetails)
+@if($show && $movie)
 <div 
     style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99999999; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0,0,0,0.4);"
     class="dark:!bg-zinc-900/75 backdrop-blur-sm"
@@ -49,14 +49,19 @@
                 </div>
 
                 <!-- Details -->
-                <div style="flex: 1; min-width: 300px;">
+                <div style="flex: 1; min-width: 300px; min-height: 400px;">
                     <h2 id="modal-title" 
                         style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;" 
                         class="text-gray-900 dark:text-gray-100">
                         {{ $movie['Title'] }}
                     </h2>
                     
-                    <x-movie-details :movie="$movie" :details="$movieDetails" />
+                    @if($movieDetails)
+                        <x-movie-details :movie="$movie" :details="$movieDetails" />
+                    @else
+                        <!-- Loading Skeleton -->
+                        <x-movie-details-skeleton />
+                    @endif
                 </div>
             </div>
 
