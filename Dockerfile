@@ -27,40 +27,39 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files
+# Copy composer files first for better caching
 COPY composer*.json ./
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application files
+# Copy all application files
 COPY . .
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copy package.json and install Node dependencies
+# Install Node dependencies and build assets
 RUN npm ci --only=production
-
-# Build assets
 RUN npm run build
 
 # Create SQLite database
 RUN touch /var/www/html/database/database.sqlite
 
 # Set proper permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache \
-    && chmod 664 /var/www/html/database/database.sqlite
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html/storage
+RUN chmod -R 755 /var/www/html/bootstrap/cache
+RUN chmod 664 /var/www/html/database/database.sqlite
 
 # Configure Apache DocumentRoot
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Create Apache virtual host configuration
-RUN echo '<VirtualHost *:${PORT:-80}>\n\
+# Create simple Apache configuration that listens on all ports
+RUN echo 'Listen ${PORT:-8080}' > /etc/apache2/ports.conf
+RUN echo '<VirtualHost *:${PORT:-8080}>\n\
     DocumentRoot ${APACHE_DOCUMENT_ROOT}\n\
     <Directory ${APACHE_DOCUMENT_ROOT}>\n\
         AllowOverride All\n\
@@ -70,11 +69,8 @@ RUN echo '<VirtualHost *:${PORT:-80}>\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Update Apache ports configuration
-RUN echo "Listen ${PORT:-80}" > /etc/apache2/ports.conf
+# Expose the port
+EXPOSE ${PORT:-8080}
 
-# Expose port (Railway uses $PORT environment variable)
-EXPOSE ${PORT:-80}
-
-# Start with custom script
-CMD ["./start.sh"]
+# Start script
+CMD ["/var/www/html/start.sh"]
