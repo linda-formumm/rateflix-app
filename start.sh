@@ -3,7 +3,16 @@
 # Enable debugging
 set -e
 
-# Debugging: Print environment variables
+# Debugging: Print # Skip view cache for debugging...
+# php artisan view:cache
+
+# Test Laravel application with simpler checks
+echo "Testing basic Laravel functionality..."
+php artisan route:list | head -5 || echo "Route list failed"
+
+# Test if the application can boot with basic route test  
+echo "Testing application boot..."
+php artisan tinker --execute="echo 'Laravel boot successful';" || echo "Laravel boot test failed"riables
 echo "PORT: ${PORT:-8080}"
 echo "APP_ENV: ${APP_ENV}"
 echo "APP_KEY: ${APP_KEY:0:20}..." # Show only first 20 chars for security
@@ -43,17 +52,21 @@ php artisan migrate --force
 
 # Clear all caches first
 echo "Clearing all caches..."
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
+php artisan config:clear || echo "Config clear failed"
+php artisan route:clear || echo "Route clear failed"
+php artisan view:clear || echo "View clear failed"
+php artisan cache:clear || echo "Cache clear failed"
 
-# Cache configuration for production
-echo "Caching configuration..."
-php artisan config:cache
+# Skip config cache in debugging mode
+if [ "$APP_DEBUG" = "true" ]; then
+    echo "Skipping config cache due to debug mode"
+else
+    echo "Caching configuration..."
+    php artisan config:cache || echo "Config cache failed"
+fi
 
-# Cache views
-echo "Caching views..."
+# Skip view cache for now
+echo "Skipping view cache for debugging..."
 php artisan view:cache
 
 # Test Laravel application
