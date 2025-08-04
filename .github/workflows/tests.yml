@@ -47,6 +47,9 @@ jobs:
       - name: Set Testing Environment
         run: sed -i 's/APP_ENV=local/APP_ENV=testing/' .env
 
+      - name: Add OMDB API Key for tests
+        run: echo "OMDB_API_KEY=ed646546" >> .env
+
       - name: Generate Application Key
         run: php artisan key:generate
 

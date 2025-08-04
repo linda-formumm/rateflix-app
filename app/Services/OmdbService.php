@@ -13,7 +13,7 @@ class OmdbService
 
     public function __construct()
     {
-        $this->apiKey = config('services.omdb.api_key', env('OMDB_API_KEY'));
+        $this->apiKey = config('services.omdb.api_key', env('OMDB_API_KEY')) ?: 'dummy-key-for-tests';
     }
 
     /**
