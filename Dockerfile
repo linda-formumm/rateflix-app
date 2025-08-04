@@ -41,12 +41,20 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Install Node dependencies and build assets
 RUN npm ci
-RUN npm run build
 
-# Verify assets were built
-RUN ls -la /var/www/html/public/build/
+# Clear any previous builds
+RUN rm -rf /var/www/html/public/build
 
-# Create SQLite database
+# Build assets with proper error handling
+RUN npm run build || (echo "Build failed, checking setup:" && ls -la /var/www/html && exit 1)
+
+# Verify assets were built and show structure
+RUN echo "Checking build directory structure:" && \
+    ls -la /var/www/html/public/build/ && \
+    echo "Manifest content:" && \
+    cat /var/www/html/public/build/manifest.json || echo "No manifest found"
+
+# Create SQLite database with proper permissions
 RUN touch /var/www/html/database/database.sqlite
 
 # Set proper permissions

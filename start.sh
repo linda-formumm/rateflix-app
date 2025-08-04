@@ -54,6 +54,19 @@ php artisan view:cache
 echo "Testing Laravel application..."
 php artisan about || echo "Laravel about command failed, continuing..."
 
+# Test if the application can boot
+echo "Testing application boot..."
+php artisan route:list --json > /dev/null 2>&1 || echo "Route list failed, but continuing..."
+
+# Test database connection with better error handling
+echo "Testing database connection more thoroughly..."
+php artisan tinker --execute="DB::connection()->getPdo(); echo 'Database connection successful';" || echo "Database connection test failed"
+
+# Ensure storage is writable
+echo "Setting up storage permissions..."
+chmod -R 775 /var/www/html/storage
+chmod -R 775 /var/www/html/bootstrap/cache
+
 # Set ServerName to suppress Apache warnings
 echo "ServerName localhost" >> /etc/apache2/apache2.conf
 

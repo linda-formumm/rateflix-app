@@ -17,6 +17,7 @@ export default defineConfig({
         outDir: 'public/build',
         manifest: true,
         assetsDir: 'assets',
+        emptyOutDir: true,
         rollupOptions: {
             output: {
                 manualChunks: undefined,
