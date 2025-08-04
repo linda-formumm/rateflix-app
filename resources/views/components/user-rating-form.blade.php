@@ -75,7 +75,7 @@
             <!-- Rating Stars -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Your Rating
+                    Your Rating <span class="text-red-500">*</span>
                 </label>
                 <div class="flex items-center gap-1">
                     @for($i = 1; $i <= 5; $i++)
@@ -91,18 +91,28 @@
                         </span>
                     @endif
                 </div>
+                @error('ratingData.rating')
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
             </div>
             
             <!-- Review -->
             <div>
                 <label for="review" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Your Review (Optional)
+                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                        {{ strlen($this->ratingData['review'] ?? '') }}/1000 characters
+                    </span>
                 </label>
                 <textarea 
-                    wire:model="ratingData.review"
+                    wire:model.live="ratingData.review"
                     rows="4" 
+                    maxlength="1000"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-700 dark:text-gray-100"
                     placeholder="Share your thoughts about this movie..."></textarea>
+                @error('ratingData.review')
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
             </div>
             
             <!-- Submit Button -->

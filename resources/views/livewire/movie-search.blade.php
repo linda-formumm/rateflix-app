@@ -32,6 +32,13 @@ new class extends Component {
 
     public function updatedQuery()
     {                
+        // Frontend Validation for search input
+        if (strlen($this->query) > 0 && strlen($this->query) < 3) {
+            $this->movies = null;
+            $this->isLoading = false;
+            return;
+        }
+
         if (strlen($this->query) >= 3) {
             $this->search();
         } else {
@@ -87,13 +94,19 @@ new class extends Component {
 
     public function saveUserRating()
     {
+        // Frontend + Backend Validation
+        $this->validate([
+            'ratingData.rating' => 'required|integer|min:1|max:5',
+            'ratingData.review' => 'nullable|string|max:1000',
+        ], [
+            'ratingData.rating.required' => 'Please select a rating before saving.',
+            'ratingData.rating.min' => 'Rating must be at least 1 star.',
+            'ratingData.rating.max' => 'Rating cannot exceed 5 stars.',
+            'ratingData.review.max' => 'Review cannot exceed 1000 characters.',
+        ]);
+
         if (!auth()->check()) {
             session()->flash('error', 'Please login to rate movies.');
-            return;
-        }
-
-        if ($this->ratingData['rating'] <= 0) {
-            session()->flash('error', 'Please select a rating.');
             return;
         }
 
@@ -102,23 +115,28 @@ new class extends Component {
             return;
         }
 
-        UserRating::updateOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'imdb_id' => $this->selectedMovie['imdbID']
-            ],
-            [
-                'movie_title' => $this->selectedMovie['Title'],
-                'rating' => $this->ratingData['rating'],
-                'review' => $this->ratingData['review'] ?: null
-            ]
-        );
+        try {
+            UserRating::updateOrCreate(
+                [
+                    'user_id' => auth()->id(),
+                    'imdb_id' => $this->selectedMovie['imdbID']
+                ],
+                [
+                    'movie_title' => $this->selectedMovie['Title'],
+                    'rating' => $this->ratingData['rating'],
+                    'review' => $this->ratingData['review'] ?: null
+                ]
+            );
 
-        session()->flash('success', 'Rating saved successfully!');
-        
-        // Reset rating aber behalte movie info
-        $this->ratingData['rating'] = 0;
-        $this->ratingData['review'] = '';
+            session()->flash('success', 'Rating saved successfully!');
+            
+            // Reset rating aber behalte movie info
+            $this->ratingData['rating'] = 0;
+            $this->ratingData['review'] = '';
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to save rating. Please try again.');
+            \Log::error('Rating save error: ' . $e->getMessage());
+        }
     }
 
     public function deleteUserRating($imdbId)
@@ -148,6 +166,14 @@ new class extends Component {
 
 <div class="relative z-10 p-4">
     <x-search-input wire:model.live.debounce.750ms="query" placeholder="Enter movie title (e.g. Matrix)" value="{{ $query }}" />
+    
+    @if(strlen($query) > 0 && strlen($query) < 3)
+        <div class="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+            <p class="text-yellow-700 dark:text-yellow-300 text-sm">
+                Please enter at least 3 characters to search for movies.
+            </p>
+        </div>
+    @endif
 
     @if($isLoading)
         <x-movie-skeleton :count="10" />
