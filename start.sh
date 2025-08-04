@@ -46,13 +46,23 @@ fi
 
 # Test database connection
 echo "Testing database connection..."
-if [ "$DB_CONNECTION" = "pgsql" ]; then
-    echo "Using PostgreSQL database"
-    php artisan migrate:status || echo "Migration status check failed, continuing..."
+echo "DB_CONNECTION: ${DB_CONNECTION:-sqlite}"
+
+if [ "$DB_CONNECTION" = "pgsql" ] && [ ! -z "$DB_HOST" ]; then
+    echo "Using PostgreSQL database at $DB_HOST"
+    # Test PostgreSQL connection
+    if ! php artisan migrate:status 2>/dev/null; then
+        echo "PostgreSQL connection failed, falling back to SQLite"
+        export DB_CONNECTION=sqlite
+        export DB_DATABASE="/var/www/html/database/database.sqlite"
+    fi
 else
-    echo "Using SQLite database (fallback)"
-    php artisan migrate:status || echo "Migration status check failed, continuing..."
+    echo "Using SQLite database (default)"
+    export DB_CONNECTION=sqlite
+    export DB_DATABASE="/var/www/html/database/database.sqlite"
 fi
+
+php artisan migrate:status || echo "Migration status check failed, continuing..."
 
 # Run database migrations
 echo "Running migrations..."
