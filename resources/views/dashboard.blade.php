@@ -1,10 +1,4 @@
-<x-layouts.        <!-- Current Featur        <!-- Future Features Preview -->
-        <div class="bg-gray-50 dark:bg-zinc-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-8">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">🚀 Potential Future Features</h2>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">Ideas for expanding the platform:</p>->
-        <div class="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-neutral-700 p-8">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">✅ Ready to use</h2>
-            <div class="grid gap-4 md:grid-cols-2">:title="__('Dashboard')">
+<x-layouts.app :title="__('Dashboard')">
     <div class="flex h-full w-full flex-1 flex-col gap-6 rounded-xl">
         
         <!-- Welcome Section -->
@@ -17,7 +11,7 @@
 
         <!-- Current Features -->
         <div class="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-neutral-700 p-8">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">� Ready to use</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">✅ Ready to use</h2>
             <div class="grid gap-4 md:grid-cols-2">
                 <a href="{{ route('movies') }}" 
                    class="flex items-center gap-4 p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
@@ -32,7 +26,7 @@
                    class="flex items-center gap-4 p-6 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors">
                     <div class="text-3xl">⭐</div>
                     <div>
-                        <h3 class="font-semibold text-purple-900 dark:text-purple-100">Your Ratings</h3>
+                        <h3 class="font-semibold text-purple-900 dark:text-purple-100">Your Ratings ({{ auth()->user()->ratings()->count() ?: 0 }})</h3>
                         <p class="text-sm text-purple-700 dark:text-purple-300">Manage your movie ratings</p>
                     </div>
                 </a>
@@ -41,7 +35,7 @@
 
         <!-- Future Features Preview -->
         <div class="bg-gray-50 dark:bg-zinc-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-8">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">� Potential Future Features</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">🚀 Potential Future Features</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-6">Ideas for expanding the platform:</p>
             
             <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -15,7 +15,7 @@
                 <flux:navlist.group class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="video-camera" :href="route('movies')" :current="request()->routeIs('movies')" wire:navigate>{{ __('Movie Search') }}</flux:navlist.item>
-                    <flux:navlist.item icon="star" :href="route('ratings')" :current="request()->routeIs('ratings')" wire:navigate>{{ __('My Movie Ratings') }}</flux:navlist.item>
+                    <flux:navlist.item icon="star" :href="route('ratings')" :current="request()->routeIs('ratings')" wire:navigate>{{ __('My Movie Ratings') }} ({{ auth()->user()->ratings()->count() ?: 0 }})</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
