@@ -40,7 +40,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Install Node dependencies and build assets
-RUN npm ci --only=production
+RUN npm ci
 RUN npm run build
 
 # Create SQLite database
