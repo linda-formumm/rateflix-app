@@ -13,13 +13,14 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     sqlite3 \
-    libsqlite3-dev
+    libsqlite3-dev \
+    libpq-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql pdo_sqlite pdo_pgsql mbstring exif pcntl bcmath gd
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -73,7 +74,7 @@ RUN if [ -f "/var/www/html/public/build/.vite/manifest.json" ]; then \
         echo "console.log('Fallback JS loaded');" > /var/www/html/public/build/assets/app.js; \
     fi
 
-# Create SQLite database with proper permissions
+# Create SQLite database with proper permissions (fallback for local development)
 RUN touch /var/www/html/database/database.sqlite
 
 # Set proper permissions

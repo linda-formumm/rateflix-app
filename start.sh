@@ -46,7 +46,13 @@ fi
 
 # Test database connection
 echo "Testing database connection..."
-php artisan migrate:status || echo "Migration status check failed, continuing..."
+if [ "$DB_CONNECTION" = "pgsql" ]; then
+    echo "Using PostgreSQL database"
+    php artisan migrate:status || echo "Migration status check failed, continuing..."
+else
+    echo "Using SQLite database (fallback)"
+    php artisan migrate:status || echo "Migration status check failed, continuing..."
+fi
 
 # Run database migrations
 echo "Running migrations..."
