@@ -109,7 +109,7 @@ class UserRatingService
     }
 
     /**
-     * Get just the user ratings without OMDB API calls (faster)
+     * Get just the user ratings without OMDB API calls
      */
     public function getUserRatingsOnly(int $userId, string $sortBy = 'created_at', string $sortDirection = 'desc'): Collection
     {

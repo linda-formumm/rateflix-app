@@ -9,7 +9,7 @@ class OmdbService
 {
     private string $apiKey;
     private string $baseUrl = 'https://www.omdbapi.com/';
-    private int $cacheMinutes = 60; // Cache für 1 Stunde
+    private int $cacheMinutes = 60; // Cache for 1 hour
 
     public function __construct()
     {
