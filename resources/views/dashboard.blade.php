@@ -1,4 +1,10 @@
-<x-layouts.app :title="__('Dashboard')">
+<x-layouts.        <!-- Current Featur        <!-- Future Features Preview -->
+        <div class="bg-gray-50 dark:bg-zinc-800/50 rounded-xl border border-gray-200 dark:border-gray-700 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">🚀 Potential Future Features</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Ideas for expanding the platform:</p>->
+        <div class="bg-white dark:bg-zinc-900 rounded-xl border border-neutral-200 dark:border-neutral-700 p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">✅ Ready to use</h2>
+            <div class="grid gap-4 md:grid-cols-2">:title="__('Dashboard')">
     <div class="flex h-full w-full flex-1 flex-col gap-6 rounded-xl">
         
         <!-- Welcome Section -->
