@@ -12,6 +12,9 @@ echo "OMDB_API_KEY: ${OMDB_API_KEY:0:8}..." # Show only first 8 chars
 # Set default port if not provided by Railway
 export PORT=${PORT:-8080}
 
+# Force HTTPS in production
+export FORCE_HTTPS=true
+
 # Update Apache configuration with Railway port
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/ports.conf
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/sites-available/000-default.conf
@@ -32,14 +35,16 @@ php artisan migrate:status || echo "Migration status check failed, continuing...
 echo "Running migrations..."
 php artisan migrate --force
 
-# Clear and cache configuration
-echo "Caching configuration..."
+# Clear all caches first
+echo "Clearing all caches..."
 php artisan config:clear
-php artisan config:cache
-
-# Don't cache routes in production if they might cause issues
-echo "Clearing route cache..."
 php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+
+# Cache configuration for production
+echo "Caching configuration..."
+php artisan config:cache
 
 # Cache views
 echo "Caching views..."
