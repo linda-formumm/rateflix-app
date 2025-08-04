@@ -60,7 +60,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Create Apache virtual host configuration
-RUN echo '<VirtualHost *:80>\n\
+RUN echo '<VirtualHost *:${PORT:-80}>\n\
     DocumentRoot ${APACHE_DOCUMENT_ROOT}\n\
     <Directory ${APACHE_DOCUMENT_ROOT}>\n\
         AllowOverride All\n\
@@ -70,8 +70,11 @@ RUN echo '<VirtualHost *:80>\n\
     CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Expose port 80
-EXPOSE 80
+# Update Apache ports configuration
+RUN echo "Listen ${PORT:-80}" > /etc/apache2/ports.conf
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Expose port (Railway uses $PORT environment variable)
+EXPOSE ${PORT:-80}
+
+# Start with custom script
+CMD ["./start.sh"]
