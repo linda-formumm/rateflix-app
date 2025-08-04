@@ -15,6 +15,10 @@ export PORT=${PORT:-8080}
 # Force HTTPS in production
 export FORCE_HTTPS=true
 
+# Enable detailed error logging for debugging
+export APP_DEBUG=true
+export LOG_LEVEL=debug
+
 # Update Apache configuration with Railway port
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/ports.conf
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/sites-available/000-default.conf
@@ -22,9 +26,11 @@ sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/sites-available/000-default.conf
 # Generate application key if not exists
 if [ -z "$APP_KEY" ]; then
     echo "Generating APP_KEY..."
-    php artisan key:generate --force
+    php artisan key:generate --force --show > /tmp/app_key
+    export APP_KEY=$(cat /tmp/app_key)
+    echo "Generated APP_KEY: ${APP_KEY:0:20}..."
 else
-    echo "Using provided APP_KEY"
+    echo "Using provided APP_KEY: ${APP_KEY:0:20}..."
 fi
 
 # Test database connection

@@ -46,13 +46,17 @@ RUN npm ci
 RUN rm -rf /var/www/html/public/build
 
 # Build assets with proper error handling
-RUN npm run build || (echo "Build failed, checking setup:" && ls -la /var/www/html && exit 1)
+RUN echo "Building assets..." && \
+    npm run build 2>&1 | tee /tmp/build.log || \
+    (echo "Build failed! Build log:" && cat /tmp/build.log && exit 1)
 
 # Verify assets were built and show structure
 RUN echo "Checking build directory structure:" && \
     ls -la /var/www/html/public/build/ && \
     echo "Manifest content:" && \
-    cat /var/www/html/public/build/manifest.json || echo "No manifest found"
+    cat /var/www/html/public/build/manifest.json 2>/dev/null || echo "No manifest found" && \
+    echo "Asset files:" && \
+    find /var/www/html/public/build -name "*.css" -o -name "*.js" | head -10
 
 # Create SQLite database with proper permissions
 RUN touch /var/www/html/database/database.sqlite

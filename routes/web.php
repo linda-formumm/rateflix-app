@@ -7,6 +7,11 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+// Test route for debugging
+Route::get('/test', function () {
+    return view('test');
+})->name('test');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

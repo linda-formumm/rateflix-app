@@ -14,9 +14,9 @@ export default defineConfig({
         cors: true,
     },
     build: {
-        outDir: 'public/build',
+        outDir: "public/build",
         manifest: true,
-        assetsDir: 'assets',
+        assetsDir: "assets",
         emptyOutDir: true,
         rollupOptions: {
             output: {
