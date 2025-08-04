@@ -3,7 +3,7 @@
         
         <!-- Welcome Section -->
         <div class="bg-gradient-to-r from-neutral-500 to-neutral-600 dark:from-neutral-800 dark:to-neutral-900 rounded-xl p-8 text-white">
-            <h1 class="text-3xl font-bold mb-4">Welcome to RateFlix, {{ auth()->user()->name }}! 🎬</h1>
+            <h1 class="text-3xl font-bold mb-4">Welcome to RateFlix, {{ auth()->user()->name }}! </h1>
             <p class="text-lg opacity-90 leading-relaxed">
                 Your personal movie rating platform. Search for movies, rate them, and build your personal collection.
             </p>

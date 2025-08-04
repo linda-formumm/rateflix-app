@@ -8,7 +8,7 @@ use App\Models\UserRating;
 
 new class extends Component {
     #[Url(as: 'q', except: '')]
-    public string $query = 'Matrix';
+    public string $query = '';
     
     public ?array $movies = null;
     public array $movieDetails = [];
@@ -147,7 +147,7 @@ new class extends Component {
 }; ?>
 
 <div class="relative z-10 p-4">
-    <x-search-input wire:model.live.debounce.750ms="query" placeholder="Enter movie title" value="{{ $query }}" />
+    <x-search-input wire:model.live.debounce.750ms="query" placeholder="Enter movie title (e.g. Matrix)" value="{{ $query }}" />
 
     @if($isLoading)
         <x-movie-skeleton :count="10" />
