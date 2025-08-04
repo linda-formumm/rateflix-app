@@ -19,6 +19,13 @@ export FORCE_HTTPS=true
 export APP_DEBUG=false
 export LOG_LEVEL=error
 
+# Set the actual domain URL (Railway sets RAILWAY_PUBLIC_DOMAIN)
+if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
+    export APP_URL="https://$RAILWAY_PUBLIC_DOMAIN"
+    export ASSET_URL="https://$RAILWAY_PUBLIC_DOMAIN"
+    echo "Set URLs to: $APP_URL"
+fi
+
 # Update Apache configuration with Railway port
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/ports.conf
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/sites-available/000-default.conf
