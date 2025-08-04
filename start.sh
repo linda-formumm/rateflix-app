@@ -61,6 +61,10 @@ php artisan cache:clear || echo "Cache clear failed"
 echo "Caching configuration for production..."
 php artisan config:cache || echo "Config cache failed"
 
+# Cache views for better performance
+echo "Caching views for production..."
+php artisan view:cache || echo "View cache failed"
+
 # Skip view cache for now
 echo "Skipping view cache for debugging..."
 php artisan view:cache

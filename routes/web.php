@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
-    return view('test');
+    return view('home');
 })->name('home');
 
 // Keep JSON route for debugging
