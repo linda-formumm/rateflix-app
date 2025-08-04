@@ -10,7 +10,12 @@
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-@vite(['resources/css/app.css', 'resources/js/app.js'])
+@if(app()->environment('testing'))
+    {{-- In testing environment, use CDN Tailwind to avoid Vite manifest issues --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+@else
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+@endif
 @fluxAppearance
 
 <style>
