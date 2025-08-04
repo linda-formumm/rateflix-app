@@ -61,20 +61,13 @@ jobs:
           # Copy Vite manifest to expected location for Laravel
           if [ -f "public/build/.vite/manifest.json" ]; then
             cp public/build/.vite/manifest.json public/build/manifest.json
-            echo "Copied Vite manifest to Laravel expected location"
           else
             # Create fallback manifest for testing
-            mkdir -p public/build
-            echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json
             mkdir -p public/build/assets
+            echo '{"resources/css/app.css":{"file":"assets/app.css","src":"resources/css/app.css","isEntry":true},"resources/js/app.js":{"file":"assets/app.js","src":"resources/js/app.js","isEntry":true}}' > public/build/manifest.json
             touch public/build/assets/app.css
             touch public/build/assets/app.js
-            echo "Created fallback manifest for testing"
           fi
-          # Show what we have
-          ls -la public/build/
-          echo "Manifest content:"
-          cat public/build/manifest.json
 
       - name: Run Tests
         run: ./vendor/bin/pest
