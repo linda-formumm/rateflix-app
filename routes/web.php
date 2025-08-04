@@ -19,6 +19,22 @@ Route::get('/json', function () {
     ]);
 })->name('json');
 
+// Asset debugging route
+Route::get('/assets', function () {
+    $buildPath = public_path('build');
+    $manifestPath = public_path('build/manifest.json');
+    
+    return response()->json([
+        'build_directory_exists' => is_dir($buildPath),
+        'manifest_exists' => file_exists($manifestPath),
+        'build_contents' => is_dir($buildPath) ? array_slice(scandir($buildPath), 2) : 'No build directory',
+        'manifest_content' => file_exists($manifestPath) ? json_decode(file_get_contents($manifestPath), true) : 'No manifest',
+        'app_url' => config('app.url'),
+        'asset_url' => config('app.asset_url'),
+        'vite_manifest' => app('vite')->manifestHash ?? 'No Vite manifest hash'
+    ]);
+})->name('assets');
+
 // Simple HTML test route
 Route::get('/simple', function () {
     return '<!DOCTYPE html><html><head><title>Simple Test</title></head><body><h1>Laravel läuft!</h1><p>PHP Version: ' . phpversion() . '</p></body></html>';
