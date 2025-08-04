@@ -24,6 +24,10 @@ if [ ! -z "$RAILWAY_PUBLIC_DOMAIN" ]; then
     export APP_URL="https://$RAILWAY_PUBLIC_DOMAIN"
     export ASSET_URL="https://$RAILWAY_PUBLIC_DOMAIN"
     echo "Set URLs to: $APP_URL"
+else
+    # Fallback for local/testing environments
+    export APP_URL="${APP_URL:-http://localhost}"
+    export ASSET_URL="${ASSET_URL:-http://localhost}"
 fi
 
 # Update Apache configuration with Railway port
