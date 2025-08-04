@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
 Route::get('/', function () {
+    return view('test');
+})->name('home');
+
+// Keep JSON route for debugging
+Route::get('/json', function () {
     return response()->json([
         'status' => 'Laravel is running!',
         'php_version' => phpversion(),
@@ -12,7 +17,7 @@ Route::get('/', function () {
         'app_key_set' => !empty(config('app.key')),
         'database_connection' => 'testing...'
     ]);
-})->name('home');
+})->name('json');
 
 // Simple HTML test route
 Route::get('/simple', function () {

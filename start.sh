@@ -25,8 +25,8 @@ export PORT=${PORT:-8080}
 export FORCE_HTTPS=true
 
 # Enable detailed error logging for debugging
-export APP_DEBUG=true
-export LOG_LEVEL=debug
+export APP_DEBUG=false
+export LOG_LEVEL=error
 
 # Update Apache configuration with Railway port
 sed -i "s/\${PORT:-8080}/$PORT/g" /etc/apache2/ports.conf
@@ -57,13 +57,9 @@ php artisan route:clear || echo "Route clear failed"
 php artisan view:clear || echo "View clear failed"
 php artisan cache:clear || echo "Cache clear failed"
 
-# Skip config cache in debugging mode
-if [ "$APP_DEBUG" = "true" ]; then
-    echo "Skipping config cache due to debug mode"
-else
-    echo "Caching configuration..."
-    php artisan config:cache || echo "Config cache failed"
-fi
+# Now cache for production
+echo "Caching configuration for production..."
+php artisan config:cache || echo "Config cache failed"
 
 # Skip view cache for now
 echo "Skipping view cache for debugging..."

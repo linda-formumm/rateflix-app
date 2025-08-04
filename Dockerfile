@@ -42,19 +42,27 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install Node dependencies and build assets
 RUN npm ci
 
-# Create minimal build directory if build fails
+# Create minimal build directory 
 RUN mkdir -p /var/www/html/public/build
 
-# Try to build assets, but continue if it fails
-RUN echo "Attempting to build assets..." && \
-    (npm run build 2>&1 | tee /tmp/build.log && echo "Build successful") || \
-    (echo "Build failed, creating minimal manifest:" && \
-     echo '{"resources/css/app.css":{"file":"app.css"},"resources/js/app.js":{"file":"app.js"}}' > /var/www/html/public/build/manifest.json && \
-     echo "/* Fallback CSS */" > /var/www/html/public/build/app.css && \
-     echo "// Fallback JS" > /var/www/html/public/build/app.js)
+# Try to build assets properly
+RUN echo "Building assets with detailed logging..." && \
+    npm run build 2>&1 | tee /tmp/build.log || true
 
-# Show what we have
-RUN echo "Build directory contents:" && ls -la /var/www/html/public/build/ || echo "No build directory"
+# Check if build was successful, create fallback if not
+RUN if [ ! -f "/var/www/html/public/build/manifest.json" ]; then \
+        echo "Build failed or incomplete, creating fallback assets:"; \
+        echo '{"resources/css/app.css":{"file":"assets/app-fallback.css","src":"resources/css/app.css"},"resources/js/app.js":{"file":"assets/app-fallback.js","src":"resources/js/app.js"}}' > /var/www/html/public/build/manifest.json; \
+        mkdir -p /var/www/html/public/build/assets; \
+        echo "/* Fallback Tailwind CSS */ @import 'tailwindcss';" > /var/www/html/public/build/assets/app-fallback.css; \
+        echo "// Fallback JS - App loaded" > /var/www/html/public/build/assets/app-fallback.js; \
+    else \
+        echo "Build successful!"; \
+    fi
+
+# Show final build status
+RUN echo "Final build directory:" && ls -la /var/www/html/public/build/ && \
+    echo "Manifest content:" && cat /var/www/html/public/build/manifest.json
 
 # Create SQLite database with proper permissions
 RUN touch /var/www/html/database/database.sqlite
