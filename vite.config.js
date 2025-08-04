@@ -13,4 +13,14 @@ export default defineConfig({
     server: {
         cors: true,
     },
+    build: {
+        outDir: 'public/build',
+        manifest: true,
+        assetsDir: 'assets',
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+    },
 });

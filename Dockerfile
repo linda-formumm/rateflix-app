@@ -43,6 +43,9 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN npm ci
 RUN npm run build
 
+# Verify assets were built
+RUN ls -la /var/www/html/public/build/
+
 # Create SQLite database
 RUN touch /var/www/html/database/database.sqlite
 
@@ -50,6 +53,7 @@ RUN touch /var/www/html/database/database.sqlite
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html/storage
 RUN chmod -R 755 /var/www/html/bootstrap/cache
+RUN chmod -R 755 /var/www/html/public/build
 RUN chmod 664 /var/www/html/database/database.sqlite
 
 # Configure Apache DocumentRoot
