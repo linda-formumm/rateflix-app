@@ -3,16 +3,7 @@
 # Enable debugging
 set -e
 
-# Debugging: Print # Skip view cache for debugging...
-# php artisan view:cache
-
-# Test Laravel application with simpler checks
-echo "Testing basic Laravel functionality..."
-php artisan route:list | head -5 || echo "Route list failed"
-
-# Test if the application can boot with basic route test  
-echo "Testing application boot..."
-php artisan tinker --execute="echo 'Laravel boot successful';" || echo "Laravel boot test failed"riables
+# Debugging: Print environment variables
 echo "PORT: ${PORT:-8080}"
 echo "APP_ENV: ${APP_ENV}"
 echo "APP_KEY: ${APP_KEY:0:20}..." # Show only first 20 chars for security
@@ -65,21 +56,13 @@ php artisan config:cache || echo "Config cache failed"
 echo "Caching views for production..."
 php artisan view:cache || echo "View cache failed"
 
-# Skip view cache for now
-echo "Skipping view cache for debugging..."
-php artisan view:cache
-
-# Test Laravel application
-echo "Testing Laravel application..."
-php artisan about || echo "Laravel about command failed, continuing..."
+# Test basic Laravel functionality
+echo "Testing basic Laravel functionality..."
+php artisan route:list | head -5 || echo "Route list failed"
 
 # Test if the application can boot
 echo "Testing application boot..."
-php artisan route:list --json > /dev/null 2>&1 || echo "Route list failed, but continuing..."
-
-# Test database connection with better error handling
-echo "Testing database connection more thoroughly..."
-php artisan tinker --execute="DB::connection()->getPdo(); echo 'Database connection successful';" || echo "Database connection test failed"
+php artisan tinker --execute="echo 'Laravel boot successful';" || echo "Laravel boot test failed"
 
 # Ensure storage is writable
 echo "Setting up storage permissions..."
